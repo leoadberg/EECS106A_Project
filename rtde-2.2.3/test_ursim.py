@@ -15,11 +15,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-from numpy import sin,sign,eye, zeros
-from numpy.linalg import norm,inv,det
-from math import pi,sqrt,atan2,sin,cos, floor
-
-
 def average(l1, l2, weight):
     l = []
     for i in range(len(l1)):
@@ -30,7 +25,8 @@ def average(l1, l2, weight):
 sim = True
 
 if sim:
-    HOST = "localhost" # The remote host
+    # HOST = "localhost" # The remote host
+    HOST = "157.131.107.222" # The remote host
     freq = 3200
 else:
     HOST = "192.168.1.2" # The remote host
