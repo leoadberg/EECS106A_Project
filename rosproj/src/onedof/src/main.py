@@ -33,22 +33,6 @@ while not rospy.is_shutdown():
     request.ik_request.ik_link_name = link
     request.ik_request.attempts = 20
     request.ik_request.pose_stamped.header.frame_id = "base"
-    
-    # Pick Up
-    #- Translation: [0.675, -0.499, -0.095]
-    #- Rotation: in Quaternion [0.005, 1.000, -0.004, 0.007]
-
-    # Place
-    #- Translation: [0.973, -0.419, -0.090]
-    #- Rotation: in Quaternion [0.022, 0.980, -0.012, 0.199]
-
-    
-    #- Translation: [0.781, -0.450, -0.081]
-    #- Rotation: in Quaternion [-0.089, 0.906, 0.091, 0.405]
-    
-    #- Translation: [1.071, -0.247, -0.085]
-    #- Rotation: in Quaternion [-0.080, 0.892, 0.045, 0.443]
-
 
     
     #Set the desired orientation for the end effector HERE
@@ -78,38 +62,6 @@ while not rospy.is_shutdown():
         # Plan IK and execute
         group.go()
         right_gripper.close()
-        rospy.sleep(1.0)
-        
-    except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
-        
-    # Place
-    request.ik_request.pose_stamped.pose.position.x = 0.973
-    request.ik_request.pose_stamped.pose.position.y = -0.419
-    request.ik_request.pose_stamped.pose.position.z = -0.090        
-    request.ik_request.pose_stamped.pose.orientation.x = 0.022
-    request.ik_request.pose_stamped.pose.orientation.y = 0.980
-    request.ik_request.pose_stamped.pose.orientation.z = -0.012
-    request.ik_request.pose_stamped.pose.orientation.w = 0.199
-    
-    try:
-        #Send the request to the service
-        response = compute_ik(request)
-        
-        #Print the response HERE
-        print(response)
-        group = MoveGroupCommander(arm + "_arm")
-
-        # Setting position and orientation target
-        group.set_pose_target(request.ik_request.pose_stamped)
-
-        # TRY THIS
-        # Setting just the position without specifying the orientation
-        ###group.set_position_target([0.5, 0.5, 0.0])
-
-        # Plan IK and execute
-        group.go()
-        right_gripper.open()
         rospy.sleep(1.0)
         
     except rospy.ServiceException, e:

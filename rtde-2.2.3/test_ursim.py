@@ -15,11 +15,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-from numpy import sin,sign,eye, zeros
-from numpy.linalg import norm,inv,det
-from math import pi,sqrt,atan2,sin,cos, floor
-
-
 def average(l1, l2, weight):
     l = []
     for i in range(len(l1)):
