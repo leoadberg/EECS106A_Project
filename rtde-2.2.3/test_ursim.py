@@ -30,7 +30,8 @@ def average(l1, l2, weight):
 sim = True
 
 if sim:
-    HOST = "localhost" # The remote host
+    # HOST = "localhost" # The remote host
+    HOST = "157.131.107.222" # The remote host
     freq = 3200
 else:
     HOST = "192.168.1.2" # The remote host
