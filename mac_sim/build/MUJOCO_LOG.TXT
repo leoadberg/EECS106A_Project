@@ -1,0 +1,36 @@
+Thu Dec  5 21:57:14 2019
+ERROR: Could not open activation key file mjkey.txt
+
+Thu Dec  5 21:57:30 2019
+ERROR: Load model error: Error: could not open STL file '/Users/leoadberg/Desktop/College/Fall_2019/EECS106A/project/model/mesh/visual/base.stl'
+Object name = base, id = 0, line = 43, column = 9
+
+Thu Dec  5 21:57:43 2019
+ERROR: Load model error: Error: PNG file load error 'empty input or file doesn't exist' in texture id = 5
+Object name = wood, id = 5, line = 64, column = 9
+
+Thu Dec  5 21:58:10 2019
+ERROR: Load model error: Error: PNG file load error 'empty input or file doesn't exist' in texture id = 5
+Object name = wood, id = 5, line = 64, column = 9
+
+Thu Dec  5 22:35:27 2019
+WARNING: Unknown warning type Time = 0.0120.
+
+Thu Dec  5 22:37:29 2019
+WARNING: Unknown warning type Time = 0.0120.
+
+Thu Dec  5 22:37:40 2019
+WARNING: Unknown warning type Time = 0.0120.
+
+Thu Dec  5 22:37:50 2019
+WARNING: Unknown warning type Time = 0.0120.
+
+Thu Dec  5 22:38:00 2019
+WARNING: Unknown warning type Time = 0.0120.
+
+Thu Dec  5 22:38:10 2019
+WARNING: Unknown warning type Time = 0.0120.
+
+Thu Dec  5 22:38:48 2019
+WARNING: Unknown warning type Time = 0.0120.
+

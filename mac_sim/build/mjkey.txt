@@ -1,0 +1,20 @@
+MuJoCo Pro Personal license activation key, number 68819, type 6.
+
+Issued to Leo Adberg <ladberg@berkeley.edu>.
+
+Expires October 27, 2020.
+
+This file activates MuJoCo Pro on a single computer with id:
+OSX_240LESSDPMPK7SL_C02W201704RHRD81A166
+
+Do not modify this file. Its entire content, including the
+plain text section, is used by the activation manager.
+
+5461703ce091f16517e3ba949655d6c926b5e24a16fb941c6742438f39441455
+9eba1ba92b404bde69cce596fcaea484528116ee7ac26ec469fb231a60bd85a0
+7ee7c1ec294ffd8c211024b8434195098a2e30ce9af069e61d2065355b0fe151
+3b5b67bbb798771e350a503444aade282c051bea4cadcf5d13513651e9428c3c
+3d6e6755d378fd9aafe570e009efe60eb01b036edeee6bc5be9ab720ef6d4d7f
+8437ae631ad1698b8a081b2ff500c4335f5b9641418ee65afcf4660a9a169371
+02c6e22a289e6a94d7ae94072f31773a0f563f41f1fde38e2902366a29c46fa6
+15eac8257b7a17e189f019acc0b7569c876140a42d5879af3f158e6d91dff7c7
