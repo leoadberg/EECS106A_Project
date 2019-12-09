@@ -133,25 +133,24 @@ switch_state = 0
 tinit = time.time()
 tstart = time.time()
 i = 1
-keep_running = True
 
 start_q = [0, -0.911, 1.23, 1.26, 1.57, 0]
-zero_p = [0, 0, 0, 0, 0, 0]
+zero_q = [0, 0, 0, 0, 0, 0]
 
 
 def getq():
-	state = con.receive()
-	if state is not None:
+    state = con.receive()
+    if state is not None:
         current_q = state.actual_q
         return current_q
     else:
         sys.exit()
 
 def setq(q):
-	global tstart
+    global tstart
 
-	while time.time()-tstart < blocking:
-		pass
+    while time.time()-tstart < blocking:
+        pass
 
     tstart = time.time()
 
@@ -163,23 +162,26 @@ def setq(q):
     con.send(setp)
 
 def end():
-	con.send_pause()
-	con.disconnect()
-	time.sleep(0.5)
+    con.send_pause()
+    con.disconnect()
+    time.sleep(0.5)
 
+keep_running = True
 if __name__ == '__main__':
-	while keep_running:
-	    try:
-	    	cur_q = getq()
-	    	setq(start_q)
+    while keep_running:
+        try:
+            cur_q = getq()
+            print(cur_q)
+            setq(start_q)
 
-	    except KeyboardInterrupt:
-	        keep_running = False
-	        setp1 = current_q + [1, blocking, lookahead, gain, maxPositionError, maxOrientationError]
-	        message_list = current_q
-	        list_to_setp(setp, message_list)
-	        con.send(setp)
-	    i += 1
-	sys.stdout.write("\rComplete!{:3d} samples.\n".format(i))
+        except KeyboardInterrupt:
+            keep_running = False
+            current_q = getq()
+            setp1 = current_q + [1, blocking, lookahead, gain, maxPositionError, maxOrientationError]
+            message_list = current_q
+            list_to_setp(setp, message_list)
+            con.send(setp)
+        i += 1
+    sys.stdout.write("\rComplete!{:3d} samples.\n".format(i))
 
-	end()
+    end()
