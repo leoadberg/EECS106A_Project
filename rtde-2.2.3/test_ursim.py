@@ -142,6 +142,15 @@ def getq():
     else:
         sys.exit()
 
+def getqforce():
+    state = con.receive()
+    if state is not None:
+        current_q = state.actual_q
+        current_force = state.actual_TCP_force
+        return current_q, current_force
+    else:
+        sys.exit()
+
 def setq(q):
     global tstart
 

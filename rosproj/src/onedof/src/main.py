@@ -144,15 +144,15 @@ while not rospy.is_shutdown():
                 continue
             # print(pos, quat)
 
-            cur_q = test_ursim.getq()
+            cur_q, cur_force = test_ursim.getqforce()
             cur_pos, pos_mat = q_to_pos(cur_q)
             # print("cur_pos", cur_pos)
 
             # Modify Z based on angle in the X axis
-            pos_mat[2, 3] += clamp(quat[0] * 0.4, -0.04, 0.04)
+            # pos_mat[2, 3] += clamp(quat[0] * 0.4, -0.04, 0.04)
 
             # Modify Y based on angle in the Z axis
-            pos_mat[1, 3] += clamp(quat[2] * 0.4, -0.04, 0.04)
+            # pos_mat[1, 3] += clamp(quat[2] * 0.4, -0.04, 0.04)
 
             # Modify X based on translation between markers
             # diff_x = diff_pos[0]
