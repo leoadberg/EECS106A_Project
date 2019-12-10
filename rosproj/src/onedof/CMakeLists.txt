@@ -9,10 +9,8 @@ project(onedof)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   ar_track_alvar
-  moveit
   rospy
   std_msgs
-  tf2
 )
 
 ## System dependencies are found with CMake's conventions
@@ -107,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES onedof
-#  CATKIN_DEPENDS ar_track_alvar moveit rospy std_msgs tf2
+#  CATKIN_DEPENDS ar_track_alvar rospy std_msgs
 #  DEPENDS system_lib
 )
 

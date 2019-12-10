@@ -1,68 +1,184 @@
 #!/usr/bin/env python
 import rospy
-from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest, GetPositionIKResponse
-from geometry_msgs.msg import PoseStamped
-from moveit_commander import MoveGroupCommander
 import numpy as np
+import time
 import sys
+sys.path.append('/home/mpc-ubuntu/EECS106A_Project/rtde-2.2.3/')
+import test_ursim
+
+import tf
+import geometry_msgs.msg
 
 import roslib
 roslib.load_manifest("ur_kinematics")
 from ur_kinematics.ur_kin_py import forward, inverse
 
-#Wait for the IK service to become available
-rospy.wait_for_service('compute_ik')
-rospy.init_node('service_query')
-arm = 'right'
-#Create the function used to call the service
-compute_ik = rospy.ServiceProxy('compute_ik', GetPositionIK)
-	
-right_gripper = robot_gripper.Gripper('right')
-right_gripper.calibrate()
+# rospy.wait_for_service('compute_ik')
+rospy.init_node('tf_listener')
+listener = tf.TransformListener()
+
+rate = rospy.Rate(10)
+# while True:
+#     if listener.frameExists("ar_marker_4") and listener.frameExists("ar_marker_1"):
+#         # t = listener.getLatestCommonTime("camera_color_optical_frame", "ar_marker_0")
+#         t = listener.getLatestCommonTime("ar_marker_4", "ar_marker_1")
+#         # pos, quat = listener.lookupTransform("camera_color_optical_frame", "ar_marker_0", t)
+#         pos, quat = listener.lookupTransform("ar_marker_4", "ar_marker_1", t)
+#         print(pos, quat)
+#     else:
+#         print("Frames don't exist")
+#         print(listener.getFrameStrings())
+#     rate.sleep()
+
+#     if rospy.is_shutdown():
+#         sys.exit(1)
+
+start_q = [0, -0.911, 1.23, 1.26, 1.57, 0]
+zero_q = [0, 0, 0, 0, 0, 0]
+
+bounds = 0.1 # 10 cm from start pos
+
+
+def q_to_pos(q):
+    pos_mat = forward(np.array(q))
+    # print(pos_mat)
+    xyz = [pos_mat[0, 3], pos_mat[1, 3], pos_mat[2, 3]]
+    return xyz, pos_mat
+
+_, start_mat = q_to_pos(start_q)
+
+def fix_mat(mat):
+    x = mat[0, 3]
+    y = mat[1, 3]
+    z = mat[2, 3]
+
+    start_x = start_mat[0, 3]
+    start_y = start_mat[1, 3]
+    start_z = start_mat[2, 3]
+
+    if abs(start_x - x) >= bounds:
+        print("Hitting X bound")
+        if start_x < x:
+            mat[0, 3] = start_x + bounds
+        else:
+            mat[0, 3] = start_x - bounds
+
+    if abs(start_y - y) >= bounds:
+        print("Hitting Y bound")
+        if start_y < y:
+            mat[1, 3] = start_y + bounds
+        else:
+            mat[1, 3] = start_y - bounds
+
+    if abs(start_z - z) >= bounds:
+        print("Hitting Z bound")
+        if start_z < z:
+            mat[2, 3] = start_z + bounds
+        else:
+            mat[2, 3] = start_z - bounds
+
+    mat[0:2, 0:2] = 0
+    mat[0, 2] = -1
+    mat[1, 1] = -1
+    mat[2, 0] = -1
+
+def pos_to_q(mat, guess):
+    possible_qs = inverse(mat, 0)
+
+    # print("Possible IK Solutions:")
+    # print(possible_qs)
+
+    best_sol_ind = np.argmin(np.sum(possible_qs - guess)**2)
+
+    # print("Best solution: ", best_sol_ind)
+
+    # print(np.shape(possible_qs))
+    ret = possible_qs[best_sol_ind].tolist()
+
+    ret[1] -= 2 * np.pi
+
+    error = np.sum(np.array(ret) - guess)**2
+
+    print(error)
+    if error > 1:
+        return None
+
+    return ret
+
+def clamp(n, smallest, largest):
+    ret = max(smallest, min(n, largest))
+    if (ret != n):
+        print("clamped")
+    return ret
+
+# Go to start before anything happens
+print("Moving to home...")
+while not rospy.is_shutdown():
+    cur_q = test_ursim.getq()
+    diff = [clamp(start_q[i] - cur_q[i], -0.01, 0.01) for i in range(6)]
+    if sum(map(abs, diff)) < 0.01:
+        break
+    next_q = [cur_q[i] + diff[i] for i in range(6)]
+    test_ursim.setq(next_q)
+    rate.sleep()
+print("Got home")
+
+jiggles = 0
 
 while not rospy.is_shutdown():
-    raw_input('Press [ Enter ]: ')
-    
-    #Construct the request
-    request = GetPositionIKRequest()
-    request.ik_request.group_name = arm + "_arm"
-
-    #Alan does not have a gripper so replace link with 'right_wrist' instead
-    link = arm + "_gripper"
-
-    request.ik_request.ik_link_name = link
-    request.ik_request.attempts = 20
-    request.ik_request.pose_stamped.header.frame_id = "base"
-
-    
-    #Set the desired orientation for the end effector HERE
-    request.ik_request.pose_stamped.pose.position.x = 0.675
-    request.ik_request.pose_stamped.pose.position.y = -0.499
-    request.ik_request.pose_stamped.pose.position.z = -0.095        
-    request.ik_request.pose_stamped.pose.orientation.x = 0.005
-    request.ik_request.pose_stamped.pose.orientation.y = 1.000
-    request.ik_request.pose_stamped.pose.orientation.z = -0.004
-    request.ik_request.pose_stamped.pose.orientation.w = 0.007
-    
     try:
-        #Send the request to the service
-        response = compute_ik(request)
+        # print(cur_pos)
+
+        # pos_mat[2, 3] += (abs((time.time() % 4) - 2) - 1) / 5
+
+        if listener.frameExists("ar_marker_4") and listener.frameExists("ar_marker_1"):
+            try:
+                t = listener.getLatestCommonTime("ar_marker_4", "ar_marker_1")
+                pos, quat = listener.lookupTransform("ar_marker_4", "ar_marker_1", t)
+            except:
+                print("Lost a tracker")
+                continue
+            print(pos, quat)
+
+            cur_q = test_ursim.getq()
+            cur_pos, pos_mat = q_to_pos(cur_q)
+            print("cur_pos", cur_pos)
+
+            # Modify Z based on angle in the X axis
+            pos_mat[2, 3] += clamp(quat[0] * 0.4, -0.04, 0.04)
+
+            # Modify Y based on angle in the Z axis
+            pos_mat[1, 3] += clamp(quat[2] * 0.05, -0.01, 0.01)
+
+            # print(pos_mat)
+            fix_mat(pos_mat) #mutates pos_mat
+            # print(pos_mat)
+            desired_q = pos_to_q(pos_mat, cur_q)
+            # print(desired_q)
+            if desired_q:
+                test_ursim.setq(desired_q)
+            else:
+                # if jiggles < 10:
+                #     print("IK within range not found, jiggling joints")
+                #     new_q = [cur_q + ]
+                # else:
+                #     print("IK within range not found, stopping")
+                #     break
+                print("IK solution not found")
+        else:
+            print("Frames don't exist")
+            # print(listener.getFrameStrings())
+        rate.sleep()
+
+        # print(inverse.__code__.co_varnames)
+
+        # print(pos_mat)
+
         
-        #Print the response HERE
-        print(response)
-        group = MoveGroupCommander(arm + "_arm")
 
-        # Setting position and orientation target
-        group.set_pose_target(request.ik_request.pose_stamped)
+    except KeyboardInterrupt:
+        # test_ursim.current_q = getq()
+        # test_ursim.setq(current_q)
+        break
 
-        # TRY THIS
-        # Setting just the position without specifying the orientation
-        ###group.set_position_target([0.5, 0.5, 0.0])
-
-        # Plan IK and execute
-        group.go()
-        right_gripper.close()
-        rospy.sleep(1.0)
-        
-    except rospy.ServiceException, e:
-        print "Service call failed: %s"%e
+test_ursim.end()
