@@ -22,7 +22,7 @@ def average(l1, l2, weight):
     return l
 
 
-sim = True
+sim = False
 
 if sim:
     HOST = "localhost" # The remote host

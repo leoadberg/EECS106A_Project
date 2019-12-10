@@ -99,7 +99,7 @@ def pos_to_q(mat, guess):
 
     error = np.sum(np.array(ret) - guess)**2
 
-    print(error)
+    # print(error)
     if error > 1:
         return None
 
@@ -131,24 +131,34 @@ while not rospy.is_shutdown():
 
         # pos_mat[2, 3] += (abs((time.time() % 4) - 2) - 1) / 5
 
+        # if listener.frameExists("ar_marker_4") and listener.frameExists("ar_marker_1")and listener.frameExists("ar_marker_7"):
         if listener.frameExists("ar_marker_4") and listener.frameExists("ar_marker_1"):
             try:
                 t = listener.getLatestCommonTime("ar_marker_4", "ar_marker_1")
                 pos, quat = listener.lookupTransform("ar_marker_4", "ar_marker_1", t)
+
+                # t2 = listener.getLatestCommonTime("ar_marker_1", "ar_marker_7")
+                # diff_pos, _ = listener.lookupTransform("ar_marker_1", "ar_marker_7", t2)
             except:
                 print("Lost a tracker")
                 continue
-            print(pos, quat)
+            # print(pos, quat)
 
             cur_q = test_ursim.getq()
             cur_pos, pos_mat = q_to_pos(cur_q)
-            print("cur_pos", cur_pos)
+            # print("cur_pos", cur_pos)
 
             # Modify Z based on angle in the X axis
             pos_mat[2, 3] += clamp(quat[0] * 0.4, -0.04, 0.04)
 
             # Modify Y based on angle in the Z axis
-            pos_mat[1, 3] += clamp(quat[2] * 0.05, -0.01, 0.01)
+            pos_mat[1, 3] += clamp(quat[2] * 0.4, -0.04, 0.04)
+
+            # Modify X based on translation between markers
+            # diff_x = diff_pos[0]
+            # if (diff_x > 0.6 and diff_x < 1):
+            #     pos_mat[0, 3] += clamp((diff_x - 0.7) * 0.01, -0.01, 0.01)
+            # print(diff_pos)
 
             # print(pos_mat)
             fix_mat(pos_mat) #mutates pos_mat
