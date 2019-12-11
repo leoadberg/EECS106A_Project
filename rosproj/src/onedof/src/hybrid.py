@@ -36,6 +36,7 @@ while not rospy.is_shutdown():
 print("Got home")
 
 averaged_quat = [0, 0, 0]
+averaged_force = [0, 0, 0, 0, 0, 0]
 
 while not rospy.is_shutdown():
     try:
@@ -66,6 +67,8 @@ while not rospy.is_shutdown():
 
             for i in range(3):
                 averaged_quat[i] = averaged_quat[i] * 0.5 + quat[i] * 0.5
+            for i in range(len(averaged_force)):
+                averaged_force[i] = averaged_force[i] * 0.97 + cur_force[i] * 0.03
 
             # Modify Z based on angle in the X axis
             pos_mat[2, 3] += clamp(averaged_quat[0] * 0.2, -0.02, 0.02)
@@ -73,13 +76,9 @@ while not rospy.is_shutdown():
             # Modify Y based on angle in the Z axis
             pos_mat[1, 3] += clamp(averaged_quat[2] * 0.2, -0.02, 0.02)
 
-            # Modify X based on translation between markers
-            # diff_x = diff_pos[0]
-            # if (diff_x > 0.6 and diff_x < 1):
-            #     pos_mat[0, 3] += clamp((diff_x - 0.7) * 0.01, -0.01, 0.01)
-            # print(diff_pos)
-
-            # print(pos_mat)
+            # Modify X based on force
+            pos_mat[0, 3] += clamp(-averaged_force[0] * 0.002, -0.01, 0.01)
+            
             fix_mat(pos_mat) #mutates pos_mat
             desired_q = pos_to_q(pos_mat, cur_q)
             if desired_q:
