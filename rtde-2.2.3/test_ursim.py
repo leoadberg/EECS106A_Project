@@ -22,11 +22,11 @@ def average(l1, l2, weight):
     return l
 
 
-sim = True
+sim = False
 
 if sim:
-    # HOST = "localhost" # The remote host
-    HOST = "157.131.107.222" # The remote host
+    HOST = "localhost" # The remote host
+    # HOST = "157.131.107.222" # The remote host
     freq = 3200
 else:
     HOST = "192.168.1.2" # The remote host
@@ -38,7 +38,7 @@ parser.add_argument('--host', default='192.168.1.2', help='name of host to conne
 parser.add_argument('--port', type=int, default=30004, help='port number (30004)')
 parser.add_argument('--samples', type=int, default=freq, help='number of samples to record')
 parser.add_argument('--frequency', type=int, default=100, help='the sampling frequency in Herz')
-parser.add_argument('--config', default='bitupdate.xml', help='data configuration file to use (record_configuration.xml)')
+parser.add_argument('--config', default='/home/mpc-ubuntu/EECS106A_Project/rtde-2.2.3/bitupdate.xml', help='data configuration file to use (record_configuration.xml)')
 parser.add_argument('--output', default='robot_data.csv', help='data output file to write to (robot_data.csv)')
 parser.add_argument("--verbose", help="increase output verbosity", action="store_true")
 args = parser.parse_args()
@@ -142,6 +142,15 @@ def getq():
     else:
         sys.exit()
 
+def getqforce():
+    state = con.receive()
+    if state is not None:
+        current_q = state.actual_q
+        current_force = state.actual_TCP_force
+        return current_q, current_force
+    else:
+        sys.exit()
+
 def setq(q):
     global tstart
 
@@ -168,15 +177,12 @@ if __name__ == '__main__':
         try:
             cur_q = getq()
             print(cur_q)
-            setq(start_q)
+            setq(zero_q)
 
         except KeyboardInterrupt:
             keep_running = False
             current_q = getq()
-            setp1 = current_q + [1, blocking, lookahead, gain, maxPositionError, maxOrientationError]
-            message_list = current_q
-            list_to_setp(setp, message_list)
-            con.send(setp)
+            setq(current_q)
         i += 1
     sys.stdout.write("\rComplete!{:3d} samples.\n".format(i))
 
