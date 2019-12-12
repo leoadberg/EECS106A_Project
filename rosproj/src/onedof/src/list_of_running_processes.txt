@@ -1,0 +1,4 @@
+roslaunch realsense2_camera rs_camera.launch
+roscore
+roslaunch lab4_cam ar_track.launch
+rviz

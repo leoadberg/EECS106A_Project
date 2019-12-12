@@ -38,9 +38,6 @@ averaged_force = [0, 0, 0, 0, 0, 0]
 
 while not rospy.is_shutdown():
     try:
-        # print(cur_pos)
-
-        # pos_mat[2, 3] += (abs((time.time() % 4) - 2) - 1) / 5
 
         cur_q, cur_force = test_ursim.getqforce()
         cur_pos, pos_mat = q_to_pos(cur_q)
