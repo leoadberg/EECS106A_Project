@@ -20,22 +20,12 @@ rospy.init_node('hybrid_controller')
 listener = tf.TransformListener()
 
 rate = rospy.Rate(500)
-homerate = rospy.Rate(200)
 
 d_scale1 = 0.6666
 d_scale2 = 0.3333
 
-#  o to start before anything happens
-print("Moving to home...")
-while not rospy.is_shutdown():
-    cur_q = test_ursim.getq()
-    diff = [clamp(start_q[i] - cur_q[i], -0.01, 0.01) for i in range(6)]
-    if sum(map(abs, diff)) < 0.001:
-        break
-    next_q = [cur_q[i] + diff[i] for i in range(6)]
-    test_ursim.setq(next_q)
-    homerate.sleep()
-print("Got home")
+# Move to start before anything happens
+move_home()
 
 averaged_quat = [0, 0, 0]
 one_back_quat = [0, 0, 0]
@@ -64,14 +54,14 @@ while not rospy.is_shutdown():
             one_back_force = averaged_force
 
             for i in range(3):
-                averaged_quat[i] = averaged_quat[i] * 0.5 + quat[i] * 0.5 
+                averaged_quat[i] = averaged_quat[i] * 0.5 + quat[i] * 0.5
                 averaged_force[i] = averaged_force[i] * 0.97 + cur_force[i] * 0.03
 
             # Compute derivative
             dz = (averaged_quat[0] - one_back_quat[0]) * d_scale1 + dz * d_scale2
             dy = (averaged_quat[2] - one_back_quat[2]) * d_scale1 + dy * d_scale2
             dx = (averaged_force[0] - one_back_force[0]) * d_scale1 + dx * d_scale2
-                
+
             # Modify Z based on angle in the X axis
             pos_mat[2, 3] += clamp(averaged_quat[0] * 0.1 + dz * 0.01, -0.02, 0.02)
 
@@ -80,7 +70,7 @@ while not rospy.is_shutdown():
 
             # Modify X based on force
             pos_mat[0, 3] += clamp(-averaged_force[0] * 0.001 + dx * 0.00001, -0.01, 0.01)
-            
+
             fix_mat(pos_mat) #mutates pos_mat
             desired_q = pos_to_q(pos_mat, cur_q)
             if desired_q:
@@ -96,7 +86,7 @@ while not rospy.is_shutdown():
 
         # print(pos_mat)
 
-        
+
 
     except KeyboardInterrupt:
         # test_ursim.current_q = getq()
