@@ -23,24 +23,12 @@ rate = rospy.Rate(100)
 
 
 # Go to start before anything happens
-print("Moving to home...")
-while not rospy.is_shutdown():
-    cur_q = test_ursim.getq()
-    diff = [clamp(start_q[i] - cur_q[i], -0.01, 0.01) for i in range(6)]
-    if sum(map(abs, diff)) < 0.01:
-        break
-    next_q = [cur_q[i] + diff[i] for i in range(6)]
-    test_ursim.setq(next_q)
-    rate.sleep()
-print("Got home")
+move_home()
 
 averaged_force = [0, 0, 0, 0, 0, 0]
 
 while not rospy.is_shutdown():
     try:
-        # print(cur_pos)
-
-        # pos_mat[2, 3] += (abs((time.time() % 4) - 2) - 1) / 5
 
         cur_q, cur_force = test_ursim.getqforce()
         cur_pos, pos_mat = q_to_pos(cur_q)
@@ -74,7 +62,7 @@ while not rospy.is_shutdown():
 
         rate.sleep()
 
-        
+
 
     except KeyboardInterrupt:
         # test_ursim.current_q = getq()

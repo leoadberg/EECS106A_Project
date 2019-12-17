@@ -20,20 +20,9 @@ rospy.init_node('ar_controller')
 listener = tf.TransformListener()
 
 rate = rospy.Rate(500)
-homerate = rospy.Rate(200)
-
 
 # Go to start before anything happens
-print("Moving to home...")
-while not rospy.is_shutdown():
-    cur_q = test_ursim.getq()
-    diff = [clamp(start_q[i] - cur_q[i], -0.01, 0.01) for i in range(6)]
-    if sum(map(abs, diff)) < 0.001:
-        break
-    next_q = [cur_q[i] + diff[i] for i in range(6)]
-    test_ursim.setq(next_q)
-    homerate.sleep()
-print("Got home")
+move_home()
 
 averaged_quat = [0, 0, 0]
 
@@ -95,7 +84,7 @@ while not rospy.is_shutdown():
 
         # print(pos_mat)
 
-        
+
 
     except KeyboardInterrupt:
         # test_ursim.current_q = getq()
