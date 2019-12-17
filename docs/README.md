@@ -4,7 +4,27 @@ The continued growth in collaborative efforts between humans and robots has a mu
 
 # Design
 
-Something here
+## What design criteria must your project meet? What is the desired functionality?
+
+RAWB's desired functionality is to make lifting the tray as easy and intuitive as possible while keeping the contents of the tray stable. When designing RAWB, our criteria were that it has to take relatively minute sensor inputs and output perfectly chosen actions to keep the tray and its contents steady. Due to the constantly changing human input, the robot will have to do this hundreds of times per second.
+
+## Describe the design you chose.
+
+Our design consists of a force sensor and camera for sensing the world, a non-rigid chain attachment for coupling to the tray, and a cascade of controllers PID from high to low level to actuate the robot.
+
+## What design choices did you make when you formulated your design? What trade-offs did you have to make?
+
+There are a few high-level elements that make up the system design. The sensors we used, the tray's attachment to the robot arm, and the underlying control software were all components of the design that needed to be chosen.
+
+We settled on using both AR tag input from a USB camera and the force sensor on the end effector of the robot for sensor input. The force sensor allows us to detect forces from the hand in axes that are rigidly attached to the robot and thus wouldn't be detectable by viewing the system. The AR tags allow us to detect motion of the tray in axes that are not rigidly attached to the robot and thus can't easily be detected by the force sensor.
+
+We built two attachments from the tray to the robot: a rigid clamp that constrains the tray in every axis but pitch, and a loose chain attachment that lets the tray move freely. The implementation of these attachments in described later, but each has benefits and drawbacks with respect to the rest of the design choices we made. Both attachments worked, but we settled on the chain attachment for most of our tests because the freedom it allows the human is nicer and more realistic in a real-world use case.
+
+The robot's control systems were an interesting problem. The UR5e arm takes in joint angles and uses a proprietary low-level PID controller to move the arm to those angles as fast as it can. We designed a basic higher level controller to keep the arm's motion slow, smooth, and bounded within a certain region. On top of that, we have a high level PID controller that takes in sensor inputs and outputs a desired correction velocity.
+
+## How do these design choices impact how well the project meets design criteria that would be encountered in a real engineering application, such as robustness, durability, and efficiency?
+
+We believe we have chosen the best design for our real-world problem space. Our system is proven safe by the controllers we use, durable due to the strong but flexible attachment used and industrial-strength robot arm, and robust due to the sensor inputs we picked which work no matter what object the robot is carrying or its physical characteristics. Based off playing with the completed design, we can say that RAWB is pretty efficient and fun to use.
 
 # Implementation
 
