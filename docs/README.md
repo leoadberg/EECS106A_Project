@@ -8,7 +8,14 @@ Something here
 
 # Implementation
 
-Something here
+## Describe any hardware you used or built. Illustrate with pictures and diagrams. What parts did you use to build your solution? 
+
+Our hardware was a mix of borrowed materials from Professor Francesco Borrelli’s Model Predictive Control (MPC) lab and custom designed and manufactured in the Jacobs and Invention Lab Makerspaces. The Universal Robotics (UR5e) robotic arm, and camera, was lent to us from the MPC lab. On the other hand, we designed and lasercut the tray and cart and printed the two end-effectors and end-effector mount for the arm. We designed two end-effectors with the intent of testing both a rigid C-gripper and a flexible, and as a result, underactuated, chain link design.
+
+## Describe any software you wrote in detail. Illustrate with diagrams, flow charts, and/or other appropriate visuals. This includes launch files, URDFs, etc. 
+
+## How does your complete system work? Describe each step.
+
 
 # Results
 
