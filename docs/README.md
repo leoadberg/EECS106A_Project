@@ -14,7 +14,7 @@ RAWB's desired functionality is to make lifting the tray as easy and intuitive a
 
 ### Describe the design you chose.
 
-Our design consists of a force sensor and camera for sensing the world, a non-rigid chain attachment for coupling to the tray, and a cascade of controllers PID from high to low level to actuate the robot.
+Our design consists of a force sensor and camera for sensing the world, a non-rigid chain attachment for coupling to the tray, and a cascade of PID controllers from high to low level to actuate the robot.
 
 ### What design choices did you make when you formulated your design? What trade-offs did you have to make?
 
@@ -71,6 +71,7 @@ We cheat a bit by separating into two modes: 3DOF and 1DOF.
 - The 3DOF mode is largely the same as described above with the addition that the tray is not set at angle 0, but possibly any arbitrary angle.
 - The 1DOF controller allows the human to rotate the tray easily by moving it about its center of mass.
    - The robot always keeps the center of the tray (defined by the AR tag) in the spot but rotates the other end around it to counteract the human's movement.
+   - It would have been trivial to keep the gripper fixed in 1DOF mode and simply let the human do all the rotation, but using RAWB's movement to fix the center of the tray instead is a much more interesting problem (not to mention much cooler visually).
 
 Switching modes is still an interesting problem. As our goal is for the robot to assist the human in carrying, the human cannot press a button on the computer to switch modes because it would be out of reach. Instead, the human knocks on the tray they're carrying and RAWB's force sensors detect the knock, switching modes and playing a chime to confirm the switch.
 
@@ -90,6 +91,8 @@ Works perfectly!
 
 {% include youtubePlayer.html id="0ceJVfyFgK4" %}
 
+<br />
+
 ### Cart Balancing
 
 Needs more tuning and possibly better sensors (or AR libraries).
@@ -98,9 +101,13 @@ Oscillation:
 
 {% include youtubePlayer.html id="FlgeT9mHYTw" %}
 
+<br />
+
 Tracking Failure:
 
 {% include youtubePlayer.html id="2yCwdpCG4o8" %}
+
+<br />
 
 ### 4DOF
 
@@ -134,5 +141,3 @@ Allen Ruan...
 # Additional Materials
 
 Something here
-
-{% include youtubePlayer.html id="jY_gpi_gsRI" %}
