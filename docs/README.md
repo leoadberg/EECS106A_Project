@@ -5,6 +5,7 @@
 The continued growth in collaborative efforts between humans and robots has a multitude of applications ranging from domestic household tasks such as lifting furniture to building habitats on other planets. As a result, the field of human-robot collaboration and interaction has become increasingly relevant in both industry and research. Our project, RAWB, wishes to delve deeper into the field of responsive collaboration, where feedback between both parties is exchanged in real time. Specifically, our primary objective is to be able to comfortably balance a static object in a tray suspended on one end by a human and on the other by a robotic arm in 3 degrees of freedom (DOF).
 
 <br/>
+
 # Design
 
 ### What design criteria must your project meet? What is the desired functionality?
@@ -30,6 +31,7 @@ The robot's control systems were an interesting problem. The UR5e arm takes in j
 We believe we have chosen the best design for our real-world problem space. Our system is proven safe by the controllers we use, durable due to the strong but flexible attachment used and industrial-strength robot arm, and robust due to the sensor inputs we picked which work no matter what object the robot is carrying or its physical characteristics. Based off playing with the completed design, we can say that RAWB is pretty efficient and fun to use.
 
 <br/>
+
 # Implementation
 
 ### Describe any hardware you used or built. Illustrate with pictures and diagrams. What parts did you use to build your solution?
@@ -41,16 +43,19 @@ Our hardware was a mix of borrowed materials from Professor Francesco Borrelliâ€
 ### How does your complete system work? Describe each step.
 
 <br/>
+
 # Results
 
 Something here
 
 <br/>
+
 # Conclusion
 
 Something here
 
 <br/>
+
 # Team
 
 Something here
@@ -58,6 +63,7 @@ Something here
 <img src="images/team.png" />
 
 <br/>
+
 # Additional Materials
 
 Something here
