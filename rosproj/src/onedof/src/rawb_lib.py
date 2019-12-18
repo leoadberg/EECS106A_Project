@@ -44,7 +44,7 @@ def q_to_pos(q):
 
 _, start_mat = q_to_pos(start_q)
 
-turning_rate = 0.01
+turning_rate = 0.2
 def fix_mat(mat, theta=0):
     x = mat[0, 3]
     y = mat[1, 3]
@@ -60,15 +60,20 @@ def fix_mat(mat, theta=0):
     mat[2, 3] = clamp(mat[2, 3], start_z + bounds[2][0], start_z + bounds[2][1])
 
     # Enforce that end effector is vertical
-    close_mat = np.isclose(base_rot, mat[0:2, 0:2])
-    if not (close_mat[0, 0] and close_mat[0, 1] and close_mat[0, 2] and close_mat[1, 2] and close_mat[2, 2]):
+    close_mat = np.isclose(base_rot, mat[0:3, 0:3], atol=0.01)
+    if not (close_mat[0, 0] and close_mat[1, 0] and close_mat[2, 0] and close_mat[2, 1] and close_mat[2, 2]):
+        print(base_rot)
+        print(mat[0:3, 0:3])
+        print(close_mat)
         print("Bad current orientation")
         sys.exit(1)
 
     # Interpolate between current angle and new angle
-    current_angle = np.arccos(close_mat[2, 1])
+    current_angle = -np.arcsin(mat[0, 1])
+    print(current_angle)
     new_angle = clamp(theta, current_angle - turning_rate, current_angle + turning_rate)
-    mat[0:2, 0:2] = base_rot.dot(gen_z_rot(new_angle))
+    mat[0:3, 0:3] = gen_z_rot(theta).dot(base_rot)
+    # print(mat)
 
 def pos_to_q(mat, guess):
     possible_qs = inverse(mat, 0)
