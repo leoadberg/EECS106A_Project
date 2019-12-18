@@ -40,7 +40,27 @@ Our hardware was a mix of borrowed materials from Professor Francesco Borrelliâ€
 
 ### Describe any software you wrote in detail. Illustrate with diagrams, flow charts, and/or other appropriate visuals. This includes launch files, URDFs, etc.
 
+<img src="images/controller.png" />
+
+Our ROS setup consists of a custom RAWB node, the Intel RealSense node (we only use the 2D camera, it was simply what was available in the MPC lab), the ar_track_alvar node as used in lab4, and rviz to view the AR tags. The RAWB node is written in Python and communicates with the UR5e controller over TCP/IP. The RAWB node uses the ur_kinematics library included with ROS-Industrial installation to perform forward and inverse kinematics of the UR5e arm. TF is also used in the Python code to perform transformations, but we don't set up a separate node for it.
+
+The design of the RAWB is shown in the flowchart above, but there are small variations depending on the version used (e.g. 3DOF, 4DOF, Balancing). Each cycle of the control loop, the node reads the current joint state from the robot, the current forces on the end effector, and the AR tag input.
+
+The basic 3DOF control logic is as follows:
+
+- RAWB uses the pitch of the AR tag on the tray to detect a vertical offset between the human hand and the gripper and tries to correct it accordingly by moving the Z axis of the end effector. The force sensor is not used here because although it is possible to detect pitch through force in the Z axis, it requires precise calibration and is incredibly noisy.
+- RAWB uses the yaw of the AR tag to detect the human moving the tray side-to-side and outputs a clamped velocity in the Y direction proportional to the yaw. We also used the force sensor to detect a yaw, but this doesn't work well with the non-rigid attachment so we chose AR inputs to be more versatile.
+- RAWB uses the force sensor in the X axis and outputs a corresponding velocity in the X direction. We chose a force input instead of an AR input because with the rigid attachement, applying a force in the X direction (towards the gripper) wouldn't result in any actual translation and therefore no visible different to pick up on.
+
+The balancing controller takes into account the position of the cart relative to the center of the tray and feeds it into a PID controller. The PID controller then outputs a desired tray angle that will move the cart to the center (and flat if the cart is already in the middle, obviously). This does not work perfectly yet due to a few reasons. First, the AR tracking library loses track of the cart when it reaches any reasonable speed, causing the controller to fail. Second, we have imposed hard speed limits using the "basic controller", which causes the cart to overshoot the middle almost every time. This occurs because the angle required to overcome friction when the cart is at one end is too high to return to flat by the time the cart has reached the middle, and so it usually oscillates forever.
+
+One of the problems with 4DOF is that our system only has 3 inputs in the ideal model, so a 4DOF mode should be impossible. Our ideal model only allows the human hand to put a force on a point, and therefore they cannot torque the tray relative to their hand. They can only push it in X/Y/Z, so how does our system have 4 independent outputs using only 3 inputs? We cheat a bit by separating into two modes: 3DOF and 1DOF. Switching modes is still an interesting problem. As our goal is for the robot to assist the human in carrying, the human cannot press a button on the computer to switch modes because it would be out of reach. Instead, the human knocks on the tray they're carrying and RAWB's force sensors detect the knock, switching modes and playing a chime to confirm the switch. The 3DOF mode is largely the same as described above with the addition that the tray is not set at angle 0, but possibly any arbitrary angle. The 1DOF controller allows the human to rotate the tray easily by moving it about its center of mass. The robot always keeps the center of the tray (defined by the AR tag) in the spot but rotates the other end around it to counteract the human's movement.
+
 ### How does your complete system work? Describe each step.
+
+<img src="images/architecture.png" />
+
+Something here
 
 <br/>
 
