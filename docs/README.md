@@ -53,7 +53,7 @@ Something here
 
 Something here
 
-<img src="images/team.jpg" />
+<img src="images/team.png" />
 
 <br/><br/>
 # Additional Materials
