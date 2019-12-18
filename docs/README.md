@@ -52,9 +52,27 @@ The basic 3DOF control logic is as follows:
 - RAWB uses the yaw of the AR tag to detect the human moving the tray side-to-side and outputs a clamped velocity in the Y direction proportional to the yaw. We also used the force sensor to detect a yaw, but this doesn't work well with the non-rigid attachment so we chose AR inputs to be more versatile.
 - RAWB uses the force sensor in the X axis and outputs a corresponding velocity in the X direction. We chose a force input instead of an AR input because with the rigid attachement, applying a force in the X direction (towards the gripper) wouldn't result in any actual translation and therefore no visible different to pick up on.
 
-The balancing controller takes into account the position of the cart relative to the center of the tray and feeds it into a PID controller. The PID controller then outputs a desired tray angle that will move the cart to the center (and flat if the cart is already in the middle, obviously). This does not work perfectly yet due to a few reasons. First, the AR tracking library loses track of the cart when it reaches any reasonable speed, causing the controller to fail. Second, we have imposed hard speed limits using the "basic controller", which causes the cart to overshoot the middle almost every time. This occurs because the angle required to overcome friction when the cart is at one end is too high to return to flat by the time the cart has reached the middle, and so it usually oscillates forever.
+The balancing controller extends the control of the tray pitch:
 
-One of the problems with 4DOF is that our system only has 3 inputs in the ideal model, so a 4DOF mode should be impossible. Our ideal model only allows the human hand to put a force on a point, and therefore they cannot torque the tray relative to their hand. They can only push it in X/Y/Z, so how does our system have 4 independent outputs using only 3 inputs? We cheat a bit by separating into two modes: 3DOF and 1DOF. Switching modes is still an interesting problem. As our goal is for the robot to assist the human in carrying, the human cannot press a button on the computer to switch modes because it would be out of reach. Instead, the human knocks on the tray they're carrying and RAWB's force sensors detect the knock, switching modes and playing a chime to confirm the switch. The 3DOF mode is largely the same as described above with the addition that the tray is not set at angle 0, but possibly any arbitrary angle. The 1DOF controller allows the human to rotate the tray easily by moving it about its center of mass. The robot always keeps the center of the tray (defined by the AR tag) in the spot but rotates the other end around it to counteract the human's movement.
+- The PID controller now takes as input the position of the cart relative to the center of the tray.
+- The output is a desired tray angle that will move the cart to the center (and flat if the cart is already in the middle, obviously).
+
+This does not work perfectly yet due to a few reasons:
+
+- First, the AR tracking library loses track of the cart when it reaches any reasonable speed, causing the controller to fail.
+- Second, we have imposed hard speed limits using the "basic controller", which causes the cart to overshoot the middle almost every time.
+  - This occurs because the angle required to overcome friction when the cart is at one end is too high to return to flat by the time the cart has reached the middle, and so it usually oscillates forever.
+  - The arm itself can move very fast so lifting the speed limits might solve some issues, but we weren't comfortable with it.
+
+One of the problems with 4DOF is that our system only has 3 inputs in the ideal model, so a 4DOF mode should be impossible. Our ideal model only allows the human hand to put a force on a point, and therefore they cannot torque the tray relative to their hand. They can only push it in X/Y/Z, so how does our system have 4 independent outputs using only 3 inputs?
+
+We cheat a bit by separating into two modes: 3DOF and 1DOF.
+
+- The 3DOF mode is largely the same as described above with the addition that the tray is not set at angle 0, but possibly any arbitrary angle.
+- The 1DOF controller allows the human to rotate the tray easily by moving it about its center of mass.
+   - The robot always keeps the center of the tray (defined by the AR tag) in the spot but rotates the other end around it to counteract the human's movement.
+
+Switching modes is still an interesting problem. As our goal is for the robot to assist the human in carrying, the human cannot press a button on the computer to switch modes because it would be out of reach. Instead, the human knocks on the tray they're carrying and RAWB's force sensors detect the knock, switching modes and playing a chime to confirm the switch.
 
 ### How does your complete system work? Describe each step.
 
@@ -66,7 +84,30 @@ Something here
 
 # Results
 
-Something here
+### 3DOF (Main Goal)
+
+Works perfectly!
+
+{% include youtubePlayer.html id="0ceJVfyFgK4" %}
+
+### Cart Balancing
+
+Needs more tuning and possibly better sensors (or AR libraries).
+
+Oscillation:
+
+{% include youtubePlayer.html id="FlgeT9mHYTw" %}
+
+Tracking Failure:
+
+{% include youtubePlayer.html id="2yCwdpCG4o8" %}
+
+### 4DOF
+
+Works well! In the video at 48s you can see the one failure: it changes modes when moving too fast vertically. Vertical movement adds a ton of noise to the force sensor in the Z axis so it's hard to differentiate movement and knocks. As you can see, Leo double-presses the tray instead of knocking. This is due to the fact that a knock is such a short duration (in the ms) that it can be missed entirely in between force sensor readings, and is a therefore a bit unreliable.
+
+{% include youtubePlayer.html id="IHQGxb3tbD8" %}
+
 
 <br/>
 
