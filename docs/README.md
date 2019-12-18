@@ -58,9 +58,15 @@ Something here
 
 # Team
 
-Something here
-
 <img src="images/team.png" />
+
+[Leo Adberg](http://leo.adberg.com) is a senior EECS major. Leo's main focus is in software but in high school he participated in VEX and FRC robotics. Leo wrote most of the control code for RAWB.
+
+Josh Alexander...
+
+Rajiv Govindjee...
+
+Allen Ruan...
 
 <br/>
 
