@@ -123,7 +123,10 @@ Tracking Failure:
 
 ### 4DOF
 
-Works well! In the video at 48s you can see the one failure: it changes modes when moving too fast vertically. Vertical movement adds a ton of noise to the force sensor in the Z axis so it's hard to differentiate movement and knocks. As you can see, Leo double-presses the tray instead of knocking. This is due to the fact that a knock is such a short duration (in the ms) that it can be missed entirely in between force sensor readings, and is a therefore a bit unreliable.
+Works well! Watch with audio to hear the chimes.
+
+- In the video at 48s you can see the one failure: it changes modes when moving too fast vertically. Vertical movement adds a ton of noise to the force sensor in the Z axis so it's hard to differentiate movement and knocks.
+- As you can see, Leo double-presses the tray instead of knocking. This is due to the fact that a knock is such a short duration (in the ms) that it can be missed entirely in between force sensor readings, and is a therefore a bit unreliable.
 
 {% include youtubePlayer.html id="IHQGxb3tbD8" %}
 
