@@ -42,7 +42,19 @@ Our hardware was a mix of borrowed materials from Professor Francesco Borrelliâ€
 
 <img src="images/controller.png" />
 
-Our ROS setup consists of a custom RAWB node, the Intel RealSense node (we only use the 2D camera, it was simply what was available in the MPC lab), the ar_track_alvar node as used in lab4, and rviz to view the AR tags. The RAWB node is written in Python and communicates with the UR5e controller over TCP/IP. The RAWB node uses the ur_kinematics library included with ROS-Industrial installation to perform forward and inverse kinematics of the UR5e arm. TF is also used in the Python code to perform transformations, but we don't set up a separate node for it.
+Our ROS setup consists of:
+
+- A custom RAWB node
+  - Written in Python
+  - Communicates with the UR5e controller over TCP/IP
+  - Uses ur_kinematics (included in ROS-Industrial) to perform forward and inverse kinematics of the UR5e arm
+  - TF functions are also used inside the node to perform transformations
+- Intel RealSense node
+  - We only use the 2D camera, it was simply what was available in the MPC lab
+- The ar_track_alvar node as used in lab4
+- rviz to view the AR tags
+
+We also used URSim to verify output of controllers in simulation using real data.
 
 The design of the RAWB is shown in the flowchart above, but there are small variations depending on the version used (e.g. 3DOF, 4DOF, Balancing). Each cycle of the control loop, the node reads the current joint state from the robot, the current forces on the end effector, and the AR tag input.
 
