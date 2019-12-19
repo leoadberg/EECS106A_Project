@@ -135,7 +135,11 @@ Works well! Watch with audio to hear the chimes.
 
 # Conclusion
 
-Something here
+RAWB has been, in short, a success. Not only did we meet our goal of balancing objects in 3DOF, we also met a few of our stretch goals including balancing rolling objects (a cart) and a 4DOF mode. 
+
+However, along the path we did ran into a variety of obstacles. With regards to the arm itself, there were a plethora of singularities in the arm’s reachable workspace that often resulted in sharp jerky movements. In addition, there was an extremely steep learning curve regarding picking up the two simulation environments, MuJoCo and URSim, both of which none of us had used before. Furthermore, the simulation environments were often unable to capture our entire hybrid sensing system (for e.g., there was no force sensing in URSim). Finally, due to the shared manufacturing spaces with other student groups, there was a slight bottleneck in manufacturing lead time.
+
+As a result, we would still like to iterate and improve upon our current progress. In particular, given that we used a standard PID controller, it would be interesting to see how an LQR or MPC controller would fare in our real-time reference tracking mode. In addition, balancing a ball instead of a cart would prove to be a much more challenging problem, given that we would have to incorporate a bit more vision-based sensing (e.g. thresholding, etc.). Finally, it would also be interesting to see if we could incorporate obstacle avoidance, whether simulated or physical, to improve the robustness of our project. Together, these facets would allow us to further demonstrate the novel and practical application of RAWB.
 
 <br/>
 
@@ -149,7 +153,7 @@ Josh Alexander...
 
 Rajiv Govindjee...
 
-Allen Ruan...
+Allen Ruan is a senior ME major. Allen's primary role was designing and manufacturing the hardware necessary for RAWB. 
 
 <br/>
 
