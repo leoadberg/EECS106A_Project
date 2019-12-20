@@ -109,6 +109,12 @@ Works perfectly!
 
 Needs more tuning and possibly better sensors (or AR libraries).
 
+Here is an example of it working in easy conditions:
+
+{% include youtubePlayer.html id="FXteT4uExrk" %}
+
+<br />
+
 Oscillation:
 
 {% include youtubePlayer.html id="FlgeT9mHYTw" %}
@@ -129,7 +135,6 @@ Works well! Watch with audio to hear the chimes.
 - As you can see, Leo double-presses the tray instead of knocking. This is due to the fact that a knock is such a short duration (in the ms) that it can be missed entirely in between force sensor readings, and is a therefore a bit unreliable.
 
 {% include youtubePlayer.html id="IHQGxb3tbD8" %}
-
 
 <br/>
 
@@ -160,3 +165,47 @@ Allen Ruan is a senior ME major. Allen's primary role was designing and manufact
 # Additional Materials
 
 Something here
+
+### Extra Videos
+
+3DOF hybrid working with the rigid "C" gripper.
+
+{% include youtubePlayer.html id="GcErSbAh3Lo" %}
+
+<br />
+
+Here is what the first attempt at incorporating force sensor data looks like. Think of it like a more advanced gravity compensation mode.
+
+{% include youtubePlayer.html id="HTthf7dnhDU" %}
+
+<br />
+
+3DOF hybrid with long chain.
+
+{% include youtubePlayer.html id="sA9hRUjsdpE" %}
+
+<br />
+
+One of our first 1DOF attempts.
+
+{% include youtubePlayer.html id="rObcbEdXO4k" %}
+
+<br />
+
+Our first 2DOF attempts.
+
+{% include youtubePlayer.html id="wO3QqDIYsfs" %}
+{% include youtubePlayer.html id="LPOBo16f_0A" %}
+
+<br />
+
+At attempt at 3DOF using purely force sensors, which didn't work well because we couldn't calibrate the Z axis well enough.
+
+{% include youtubePlayer.html id="K3B8UA0jZvg" %}
+
+<br />
+
+Example of running a test on URSim before hardware. This is showing that the arm cannot extend past the virtual bounds we have set.
+
+{% include youtubePlayer.html id="iNM_tO8uLY4" %}
+
