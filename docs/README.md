@@ -91,7 +91,11 @@ Switching modes is still an interesting problem. As our goal is for the robot to
 
 <img src="images/architecture.png" />
 
-Something here
+The camera outputs an image at 30 Hz of the entire system with the AR tags in view. The computer is running roscore for the entire system and takes in these images, locates the position and orientation of the AR tags, and attaches coordinate frames to the center of them. The control logic calculates how much the body frame of the AR tag on the tray has rotated in both the pitch and the yaw of the frame of the AR tag on the table. It also finds the translational distance along the Y axis of the frame of the tray AR tag that the cart AR tag has moved when it is trying to balance the cart. The control logic incorporates this information, in addition to information about the force at the end effector in the X axis of the table AR tag's frame, to find a desired location to move the end of the UR5e arm to balance the tray, or move the cart, and compute the joint angles from inverse kinematics necessary to achieve this position. When solving the cart balancing problem, the outputs from the sensor and AR tracker readings are first sent into a PID controller in order to improve the ability of the cart to reach the middle of the tray faster.
+
+These joint angle adjustments are sent over TCP/IP to the UR control box which will directly communicate with the robot. The UR control box is a low level PD controller that converts desired joint angles recieved over its Real Time Data Exchange interface into commands that tell the arm how to move. The control box communicates with the arm using a digital bus and analog signals. The robotic arm recieves those commands from the UR control box and moves to the correct configuration and changing the forces and torques in the system dynamics as a whole. The camera and the force sensor proceed to pick up on these modifications and the whole process begins anew.
+
+While this description explicitly references the 3DOF and cart balancing problems, it functions nearly identically for the 4DOF problem only adding the ability to switch what AR tag behavior is measured and the desired location of the end effector of the robot when a knock is detected by the force sensor all within the control logic.
 
 <br/>
 
@@ -154,7 +158,7 @@ As a result, we would still like to iterate and improve upon our current progres
 
 [Leo Adberg](http://leo.adberg.com) is a senior EECS major. Leo's main focus is in software but in high school he participated in VEX and FRC robotics. Leo wrote most of the control code for RAWB.
 
-Josh Alexander...
+Josh Alexander is a junior EECS major. Josh also participated in VEX Robotics in high school. He mostly focused on designing the framework for the simulation of RAWB and manufacturing the hardware used.
 
 Rajiv Govindjee...
 
