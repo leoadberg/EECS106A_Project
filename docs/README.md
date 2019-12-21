@@ -10,6 +10,8 @@ Our project, RAWB, aims to delve specifically into the sub-field of responsive c
 
 <br/>
 
+<img src="images/MuJoCo model.png" />
+
 # Design
 
 ### What design criteria must your project meet? What is the desired functionality?
@@ -36,6 +38,8 @@ limitations on our control design.
 When choosing the arm, we prioritized both access to hardware as well as the reliability/capability of the hardware. PhD student Tony Zheng, working in Professor Francesco Borelli's Model Predictive Control (MPC) lab, was generous enough to offer us access to a <a href="https://www.universal-robots.com/products/ur5-robot/">UR5e 6-DOF arm</a> there. We also considered using the Baxters or Sawyers in lab, but decided that the benefits of familiarity would be outweighed by the constant hardware issues and having to compete for robot time with other groups.
 This proved to be a good decision, as we were able to work with our hardware for entire days leading up to the presentation date, with little setup or teardown. The UR5e is specifically designed to be a cobot, with safety features like automatic shutdown on high joint loads to prevent it from harming humans or itself.
 
+<img src="images/full assembly cgrip.png" />
+
 For interacting with the environment, we built two attachments from the tray to the robot: a rigid clamp that constrains the tray in every axis but pitch, and a loose chain attachment that lets the tray move freely. The implementation of these attachments in described later, but each has benefits and drawbacks with respect to the rest of the design choices we made. Both attachments worked, but we settled on the chain attachment for most of our tests because the freedom it allows the human is nicer and more realistic in a real-world use case.
 
 The robot's control systems were an interesting problem. The UR5e arm takes in joint angles and uses a proprietary low-level PID controller to move the arm to those angles as fast as it can. We designed a basic higher level controller to keep the arm's motion slow, smooth, and bounded within a certain region. On top of that, we have a high level PID controller that takes in sensor inputs and outputs a desired correction velocity.
@@ -49,6 +53,8 @@ We believe we have chosen the best design for our real-world problem space. Our 
 # Implementation
 
 ### Describe any hardware you used or built. Illustrate with pictures and diagrams. What parts did you use to build your solution?
+
+<img src="images/tray with cart.png" />
 
 Our hardware was a mix of borrowed materials from Professor Francesco Borrelli’s Model Predictive Control (MPC) lab and custom designed and manufactured in the Jacobs and Invention Lab Makerspaces. The Universal Robotics (UR5e) robotic arm, and camera, was lent to us from the MPC lab. On the other hand, we designed and lasercut the tray and cart and printed the two end-effectors and end-effector mount for the arm. We designed two end-effectors with the intent of testing both a rigid C-gripper and a flexible, and as a result, underactuated, chain link design.
 
