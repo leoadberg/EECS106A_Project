@@ -2,7 +2,11 @@
 
 # Introduction
 
-The continued growth in collaborative efforts between humans and robots has a multitude of applications ranging from domestic household tasks such as lifting furniture to building habitats on other planets. As a result, the field of human-robot collaboration and interaction has become increasingly relevant in both industry and research. Our project, RAWB, wishes to delve deeper into the field of responsive collaboration, where feedback between both parties is exchanged in real time. Specifically, our primary objective is to be able to comfortably balance a static object in a tray suspended on one end by a human and on the other by a robotic arm in 3 degrees of freedom (DOF).
+The continued growth in collaborative efforts between humans and robots has a multitude of applications ranging from domestic household tasks to serious industrial challenges. These tasks are currently performed by two or more humans, as it is generally not safe to enter the reachable workspace of a multi-ton industrial robot. For example, common human-human collaboration tasks might include two humans trying to move a heavy object (say, a <a href="https://en.wikipedia.org/wiki/Moving_sofa_problem">sofa</a> or table) together in a cluttered environment, or several technicians working together to place a large panel precisely onto a car on the assembly line. 
+
+When it comes to designing robots to substitute for one of the humans in these tasks, the challenges are many-fold. While humans have a whole suite of force feedback sensors, many degrees of freedom, a vision system, and the ability to communicate over speech, these features are all signficantly more difficult to implement on robots, let alone integrate into one package. That being said, robots that collaborate with humans (also known as cobots) offer the ability to go beyond what two humans would be able to do; cobots can move quickly, precisely, and, most importantly, safely bear far greater loads than humans can. As such, human-robot interaction (HRI) continues to be a exciting and promising field of research.
+
+Our project, RAWB, aims to delve specifically into the sub-field of responsive collaboration, where feedback between both parties is exchanged in real time. Specifically, our primary objective is to be able to comfortably balance a static object in a tray suspended on one end by a human and on the other by a robotic arm in 3 degrees of freedom (DOF). Interaction with the robot should be natural and predictable, just as if another human were on the other end.
 
 <br/>
 
@@ -10,19 +14,29 @@ The continued growth in collaborative efforts between humans and robots has a mu
 
 ### What design criteria must your project meet? What is the desired functionality?
 
-RAWB's desired functionality is to make lifting the tray as easy and intuitive as possible while keeping the contents of the tray stable. When designing RAWB, our criteria were that it has to take relatively minute sensor inputs and output perfectly chosen actions to keep the tray and its contents steady. Due to the constantly changing human input, the robot will have to do this hundreds of times per second.
+RAWB's desired functionality is to make lifting the tray as easy and intuitive as possible while keeping the contents of the tray stable. When designing RAWB, our criteria were that it has to take relatively minute sensor inputs and output perfectly chosen actions to keep the tray and its contents steady. Due to the constantly changing human input, the robot will have to do this hundreds of times per second. Most important is that the human in the system feels the robot is acting in a helpful, intuitive manner.
+
+In terms of hardware design, we wanted to make our end effectors modular and easy to attach/detach from the robot in order to test different control approaches and iterate on design. We required all end effectors to have some degree of underactuation in order to make interaction with the robot more natural, as well as protect the end effectors themselves; the low-cost materials available to us lacked the ability to withstand large forces and moments in some directions.
 
 ### Describe the design you chose.
 
-Our design consists of a force sensor and camera for sensing the world, a non-rigid chain attachment for coupling to the tray, and a cascade of PID controllers from high to low level to actuate the robot.
+Our design can be split into sensing, actuation, and control.
+
+The chosen sensing architecture consists of a force sensor and camera, as well as state feedback from the robot. 
+We required a 6-DOF robotic arm to perform the actuation--we chose the Universal Robotics 5e (UR5e) robotic arm for this purpose (more on this decison below). On the student-designed side, we settled on a non-rigid chain attachment for coupling to the tray, as well as a more rigid C-shaped end effector. 
+For control design, we chose a cascade of PID controllers from high- to low-level to actuate the robot. For pictures and diagrams, see the Implementation section below.
 
 ### What design choices did you make when you formulated your design? What trade-offs did you have to make?
 
-There are a few high-level elements that make up the system design. The sensors we used, the tray's attachment to the robot arm, and the underlying control software were all components of the design that needed to be chosen.
+We settled on using both AR tag input from a USB camera and the force sensor on the end effector of the robot for sensor input. The force sensor allows us to detect forces from the hand in axes that are rigidly attached to the robot and thus wouldn't be detectable by viewing the system. The AR tags allow us to detect motion of the tray in axes that are not rigidly attached to the robot and thus can't easily be detected by the force sensor. 
 
-We settled on using both AR tag input from a USB camera and the force sensor on the end effector of the robot for sensor input. The force sensor allows us to detect forces from the hand in axes that are rigidly attached to the robot and thus wouldn't be detectable by viewing the system. The AR tags allow us to detect motion of the tray in axes that are not rigidly attached to the robot and thus can't easily be detected by the force sensor.
+We briefly considered more advanced computer vision, but it was decided that the focus of our project was the control and human-robot interaction component, not object detection/pose estimation. That being said, it is definitely possible to remove the AR tags and use a more complex CV stack. We also weighed the compute time and power required for some image processing; as seen in the Implementation section, image processing and the camera framerate put significant
+limitations on our control design.
 
-We built two attachments from the tray to the robot: a rigid clamp that constrains the tray in every axis but pitch, and a loose chain attachment that lets the tray move freely. The implementation of these attachments in described later, but each has benefits and drawbacks with respect to the rest of the design choices we made. Both attachments worked, but we settled on the chain attachment for most of our tests because the freedom it allows the human is nicer and more realistic in a real-world use case.
+When choosing the arm, we prioritized both access to hardware as well as the reliability/capability of the hardware. PhD student Tony Zheng, working in Professor Francesco Borelli's Model Predictive Control (MPC) lab, was generous enough to offer us access to a <a href="https://www.universal-robots.com/products/ur5-robot/">UR5e 6-DOF arm</a> there. We also considered using the Baxters or Sawyers in lab, but decided that the benefits of familiarity would be outweighed by the constant hardware issues and having to compete for robot time with other groups.
+This proved to be a good decision, as we were able to work with our hardware for entire days leading up to the presentation date, with little setup or teardown. The UR5e is specifically designed to be a cobot, with safety features like automatic shutdown on high joint loads to prevent it from harming humans or itself.
+
+For interacting with the environment, we built two attachments from the tray to the robot: a rigid clamp that constrains the tray in every axis but pitch, and a loose chain attachment that lets the tray move freely. The implementation of these attachments in described later, but each has benefits and drawbacks with respect to the rest of the design choices we made. Both attachments worked, but we settled on the chain attachment for most of our tests because the freedom it allows the human is nicer and more realistic in a real-world use case.
 
 The robot's control systems were an interesting problem. The UR5e arm takes in joint angles and uses a proprietary low-level PID controller to move the arm to those angles as fast as it can. We designed a basic higher level controller to keep the arm's motion slow, smooth, and bounded within a certain region. On top of that, we have a high level PID controller that takes in sensor inputs and outputs a desired correction velocity.
 
