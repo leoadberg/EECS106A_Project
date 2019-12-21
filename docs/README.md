@@ -188,7 +188,12 @@ Allen Ruan is a senior ME major. Allen's primary role was designing and manufact
 
 # Additional Materials
 
-Something here
+All code is located [here](https://github.com/leoadberg/EECS106A_Project/)
+
+[URDF](https://github.com/leoadberg/EECS106A_Project/blob/master/mac_sim/model/UR5_URDF.xml)
+[MJCF](https://github.com/leoadberg/EECS106A_Project/blob/master/mac_sim/model/UR5_106A.xml)
+
+[All CAD models](https://github.com/leoadberg/EECS106A_Project/tree/master/cad)
 
 ### Extra Videos
 
