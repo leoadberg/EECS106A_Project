@@ -28,7 +28,7 @@ The chosen sensing architecture consists of a force sensor and camera, as well a
 We required a 6-DOF robotic arm to perform the actuation--we chose the Universal Robotics 5e (UR5e) robotic arm for this purpose (more on this below). On the student-designed side, we settled on a non-rigid chain attachment for coupling to the tray, as well as a more rigid C-shaped end effector. 
 For control design, we chose a cascade of PID controllers from high- to low-level to actuate the robot. For pictures and diagrams, see the Implementation section below.
 
-### What design choices did you make when you formulated your design? What trade-offs did you have to make?
+### Decisions
 
 We settled on using both AR tag input from a USB camera and the force sensor on the end effector of the robot for sensor input. The force sensor allows us to detect forces from the hand in axes that are rigidly attached to the robot and thus wouldn't be detectable by viewing the system. The AR tags allow us to detect motion of the tray in axes that are not rigidly attached to the robot and thus can't easily be detected by the force sensor. 
 
@@ -203,6 +203,8 @@ All code is located [here](https://github.com/leoadberg/EECS106A_Project/)
 [MJCF](https://github.com/leoadberg/EECS106A_Project/blob/master/mac_sim/model/UR5_106A.xml)
 
 [All CAD models](https://github.com/leoadberg/EECS106A_Project/tree/master/cad)
+
+[UR 5e User Manual](https://s3-eu-west-1.amazonaws.com/ur-support-site/61611/99404_UR5e_User_Manual_en_Global.pdf)
 
 ### Extra Videos
 
